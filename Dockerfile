@@ -30,7 +30,7 @@ ENV KAFKA_INSTALL_DIR /opt/kafka
 RUN \
     yum -y update && yum clean all \
     && yum -y install \
-    wget \
+        wget \
     && wget $KAFKA_ARCHIVE_URL \
     && wget $KAFKA_SHA1_URL \
     && mkdir $KAFKA_INSTALL_DIR \
@@ -42,6 +42,9 @@ RUN \
 
 # Add Kafka binaries to PATH
 ENV PATH=$KAFKA_INSTALL_DIR/default/bin:$PATH
+
+# Overwrite default configuration files
+COPY config $KAFKA_INSTALL_DIR/default/config
 
 # Start Kafka (standalone mode)
 COPY entrypoint.sh /

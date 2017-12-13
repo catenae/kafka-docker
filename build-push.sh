@@ -1,7 +1,7 @@
 #!/bin/bash
 
-docker build -t brunneis/kafka .
-docker build -t brunneis/kafka:1.0.0 .
+docker build -t catenae/kafka .
+docker build -t catenae/kafka:1.0.0 .
 
-docker push brunneis/kafka
-docker push brunneis/kafka:1.0.0
+docker push catenae/kafka
+docker push catenae/kafka:1.0.0
