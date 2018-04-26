@@ -45,6 +45,7 @@ ENV PATH=$KAFKA_INSTALL_DIR/default/bin:$PATH
 
 # Overwrite default configuration files
 COPY config $KAFKA_INSTALL_DIR/default/config
+COPY bin $KAFKA_INSTALL_DIR/default/bin
 
 # Start Kafka (standalone mode)
 COPY entrypoint.sh /
