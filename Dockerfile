@@ -1,5 +1,5 @@
 # Kafka (Vanilla) on CentOS 7.
-# Copyright (C) 2017 Rodrigo Martínez <dev@brunneis.com>
+# Copyright (C) 2017-2018 Rodrigo Martínez <dev@brunneis.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
