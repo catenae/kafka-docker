@@ -1,5 +1,5 @@
 # Kafka (Vanilla) on CentOS 7.
-# Copyright (C) 2017-2018 Rodrigo Martínez <dev@brunneis.com>
+# Copyright (C) 2017-2019 Rodrigo Martínez <dev@brunneis.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,8 +12,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM brunneis/jdk-centos:1.8
-MAINTAINER "Rodrigo Martínez" <dev@brunneis.com>
+FROM ibmjava:8-jre
 
 ################################################
 # KAFKA
@@ -21,32 +20,20 @@ MAINTAINER "Rodrigo Martínez" <dev@brunneis.com>
 
 ARG KAFKA_VERSION
 ARG KAFKA_SUBVERSION
-ENV KAFKA_ARCHIVE kafka_$KAFKA_SUBVERSION-$KAFKA_VERSION.tgz
-ENV KAFKA_ARCHIVE_URL https://archive.apache.org/dist/kafka/$KAFKA_VERSION/$KAFKA_ARCHIVE
-ENV KAFKA_SHA1_URL $KAFKA_ARCHIVE_URL.sha1
-ENV KAFKA_INSTALL_DIR /opt/kafka
 
-# Install Kafka
 RUN \
-    yum -y update && yum clean all \
-    && yum -y install \
-        wget \
-    && wget $KAFKA_ARCHIVE_URL \
-    && wget $KAFKA_SHA1_URL \
-    && mkdir $KAFKA_INSTALL_DIR \
-    && sha1sum $KAFKA_ARCHIVE.sha1 \
-    && tar xvf $KAFKA_ARCHIVE -C $KAFKA_INSTALL_DIR \
-    && rm -f $KAFKA_ARCHIVE \
-    && rm -f $KAFKA_ARCHIVE.sha1 \
-    && ln -s $KAFKA_INSTALL_DIR/*kafka* $KAFKA_INSTALL_DIR/default
+    ARCHIVE=kafka_$KAFKA_SUBVERSION-$KAFKA_VERSION.tgz; \
+    ARCHIVE_URL=https://archive.apache.org/dist/kafka/$KAFKA_VERSION/$ARCHIVE; \
+    CHECKSUM_URL=$ARCHIVE_URL.sha1; \
+    KAFKA_INSTALL_DIR=/opt/kafka; \
+    wget $ARCHIVE_URL && \
+    wget $CHECKSUM_URL && \
+    mkdir $KAFKA_INSTALL_DIR && \
+    sha1sum $ARCHIVE.sha1 && \
+    tar xvf $ARCHIVE -C $KAFKA_INSTALL_DIR && \
+    rm -f $ARCHIVE && \
+    rm -f $ARCHIVE.sha1 && \
+    ln -s $KAFKA_INSTALL_DIR/*kafka* $KAFKA_INSTALL_DIR/default
 
-# Add Kafka binaries to PATH
 ENV PATH=$KAFKA_INSTALL_DIR/default/bin:$PATH
-
-# Overwrite default configuration files
-COPY config $KAFKA_INSTALL_DIR/default/config
-COPY bin $KAFKA_INSTALL_DIR/default/bin
-
-# Start Kafka (standalone mode)
-COPY entrypoint.sh /
-ENTRYPOINT ["bash", "entrypoint.sh"]
+ENTRYPOINT bash --login -i
